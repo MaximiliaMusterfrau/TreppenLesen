@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+    <title>TreppenLesen</title>
+
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<div id="app">
+
+    <!-- Startseite -->
+
+    <section id="startScreen" class="screen active">
+
+        <h1>📚 TreppenLesen</h1>
+
+        <p class="subtitle">
+            Lesen lernen mit Treppenwörtern
+        </p>
+
+        <div class="card">
+
+            <label for="listSelect">
+                Lernwortliste
+            </label>
+
+            <select id="listSelect">
+
+                <option value="alle">Alle Lernwörter</option>
+
+                <option value="LW1">LW 1</option>
+                <option value="LW2">LW 2</option>
+                <option value="LW3">LW 3</option>
+                <option value="LW4">LW 4</option>
+                <option value="LW5">LW 5</option>
+                <option value="LW6">LW 6</option>
+                <option value="LW7">LW 7</option>
+                <option value="LW8">LW 8</option>
+                <option value="LW9">LW 9</option>
+                <option value="LW10">LW 10</option>
+                <option value="LW11">LW 11</option>
+                <option value="LW12">LW 12</option>
+                <option value="LW13">LW 13</option>
+                <option value="LW14">LW 14</option>
+                <option value="LW15">LW 15</option>
+                <option value="LW16">LW 16</option>
+                <option value="LW17">LW 17</option>
+
+            </select>
+
+        </div>
+
+        <button id="startButton">
+            ▶️ Lernen starten
+        </button>
+
+    </section>
+
+
+
+    <!-- Lernseite -->
+
+    <section id="learnScreen" class="screen">
+
+        <header>
+
+            <button id="homeButton">
+                ← Zurück
+            </button>
+
+            <h2 id="currentList">
+                Lernen
+            </h2>
+
+        </header>
+
+        <div id="wordContainer">
+
+            <div id="stairs"></div>
+
+        </div>
+
+        <button id="speakButton">
+
+            🔊 Wort anhören
+
+        </button>
+
+        <button id="nextButton">
+
+            ➜ Weiter
+
+        </button>
+
+    </section>
+
+</div>
+
+<script src="words.js"></script>
+<script src="app.js"></script>
+
+</body>
+
+</html>

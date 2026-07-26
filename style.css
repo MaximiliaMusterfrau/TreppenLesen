@@ -1,0 +1,248 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root{
+    --blue:#1976d2;
+    --blue-dark:#1565c0;
+    --green:#43a047;
+    --grey:#eceff1;
+    --text:#263238;
+}
+
+body{
+
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+
+    background:#eef5ff;
+
+    color:var(--text);
+
+    min-height:100vh;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+}
+
+#app{
+
+    width:100%;
+    max-width:430px;
+    min-height:100vh;
+
+    background:#eef5ff;
+
+    display:flex;
+    flex-direction:column;
+
+    padding:24px;
+
+}
+
+.screen{
+
+    display:none;
+
+    flex:1;
+
+    flex-direction:column;
+
+}
+
+.screen.active{
+
+    display:flex;
+
+}
+
+h1{
+
+    margin-top:20px;
+
+    text-align:center;
+
+    color:var(--blue-dark);
+
+    font-size:2.2rem;
+
+}
+
+.subtitle{
+
+    text-align:center;
+
+    margin-top:10px;
+
+    margin-bottom:30px;
+
+    font-size:1.15rem;
+
+}
+
+.card{
+
+    background:white;
+
+    border-radius:18px;
+
+    padding:20px;
+
+    box-shadow:0 8px 18px rgba(0,0,0,.08);
+
+    margin-bottom:25px;
+
+}
+
+label{
+
+    display:block;
+
+    font-weight:bold;
+
+    margin-bottom:10px;
+
+}
+
+select{
+
+    width:100%;
+
+    font-size:1.2rem;
+
+    padding:14px;
+
+    border-radius:12px;
+
+    border:2px solid #d9d9d9;
+
+    background:white;
+
+}
+
+button{
+
+    border:none;
+
+    border-radius:18px;
+
+    padding:18px;
+
+    font-size:1.25rem;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+}
+
+#startButton{
+
+    background:var(--green);
+
+    color:white;
+
+}
+
+header{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    margin-bottom:20px;
+
+}
+
+#homeButton{
+
+    background:white;
+
+    color:var(--blue-dark);
+
+    padding:12px 18px;
+
+}
+
+#currentList{
+
+    font-size:1.5rem;
+
+}
+
+#wordContainer{
+
+    flex:1;
+
+    background:white;
+
+    border-radius:24px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    padding:25px;
+
+    margin-bottom:20px;
+
+    box-shadow:0 10px 20px rgba(0,0,0,.08);
+
+}
+
+#stairs{
+
+    font-size:2.3rem;
+
+    line-height:1.45;
+
+    font-weight:bold;
+
+    text-align:left;
+
+    width:100%;
+
+}
+
+#speakButton{
+
+    background:var(--blue);
+
+    color:white;
+
+    margin-bottom:12px;
+
+}
+
+#nextButton{
+
+    background:var(--green);
+
+    color:white;
+
+}
+
+button:disabled{
+
+    background:#bdbdbd;
+
+}
+
+@media (display-mode:standalone){
+
+    body{
+
+        background:#eef5ff;
+
+    }
+
+}
