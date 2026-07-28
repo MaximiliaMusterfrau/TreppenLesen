@@ -1,112 +1,337 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+/* ==============================
+   TreppenLesen
+   style.css
+   ============================== */
+
+*{
+
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+
 }
 
-body {
-    font-family: Arial, Helvetica, sans-serif;
-    background: #f4f8fb;
-    color: #222;
+body{
+
+    font-family:Arial,Helvetica,sans-serif;
+
+    background:#eef5ff;
+
+    color:#222;
+
+    min-height:100vh;
+
 }
 
-.screen {
-    display: none;
-    max-width: 700px;
-    margin: auto;
-    padding: 20px;
+#app{
+
+    max-width:700px;
+
+    margin:auto;
+
+    padding:20px;
+
 }
 
-.screen.active {
-    display: block;
+.screen{
+
+    display:none;
+
 }
 
-h1,
-h2 {
-    text-align: center;
-    margin-bottom: 20px;
+.screen.active{
+
+    display:block;
+
 }
 
-p {
-    text-align: center;
-    margin-bottom: 20px;
+
+/* ==============================
+   Startseite
+   ============================== */
+
+h1{
+
+    text-align:center;
+
+    font-size:2.4rem;
+
+    margin-top:20px;
+
 }
 
-select,
-button {
-    width: 100%;
-    font-size: 1.2rem;
-    padding: 12px;
-    margin-top: 12px;
-    border-radius: 10px;
-    border: none;
+.subtitle{
+
+    text-align:center;
+
+    font-size:1.2rem;
+
+    margin:20px 0 35px;
+
 }
 
-button {
-    background: #4caf50;
-    color: white;
-    cursor: pointer;
+.card{
+
+    background:white;
+
+    border-radius:20px;
+
+    padding:20px;
+
+    box-shadow:0 4px 12px rgba(0,0,0,.08);
+
+    margin-bottom:25px;
+
 }
 
-button:hover {
-    background: #43a047;
+label{
+
+    display:block;
+
+    font-size:1.1rem;
+
+    margin-bottom:10px;
+
+    font-weight:bold;
+
 }
 
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
-    gap: 10px;
+select{
+
+    width:100%;
+
+    padding:14px;
+
+    font-size:1.1rem;
+
+    border-radius:12px;
+
+    border:2px solid #ccc;
+
 }
 
-#homeButton {
-    width: auto;
-    padding: 10px 16px;
+
+/* ==============================
+   Buttons
+   ============================== */
+
+button{
+
+    width:100%;
+
+    padding:18px;
+
+    border:none;
+
+    border-radius:16px;
+
+    background:#1565c0;
+
+    color:white;
+
+    font-size:1.2rem;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:.2s;
+
 }
 
-#stars {
-    font-size: 1.2rem;
-    font-weight: bold;
+button:hover{
+
+    background:#0d47a1;
+
 }
 
-#stairs {
-    text-align: center;
-    font-size: 2rem;
-    line-height: 1.4;
-    font-weight: bold;
-    margin: 30px 0;
-    min-height: 300px;
+button:active{
+
+    transform:scale(.98);
+
 }
 
-.buttonRow {
-    display: flex;
-    gap: 12px;
+
+/* ==============================
+   Lernseite
+   ============================== */
+
+header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:12px;
+
+    margin-bottom:25px;
+
 }
 
-.buttonRow button {
-    flex: 1;
+#homeButton{
+
+    width:auto;
+
+    padding:12px 18px;
+
 }
 
-#feedback {
-    margin-top: 25px;
-    text-align: center;
-    font-size: 1.2rem;
-    font-weight: bold;
-    min-height: 30px;
+#currentList{
+
+    flex:1;
+
+    text-align:center;
+
+    font-size:1.3rem;
+
 }
 
-@media (max-width: 600px) {
+#stars{
 
-    body {
-        padding: 10px;
+    font-size:1.3rem;
+
+    font-weight:bold;
+
+}
+
+
+/* ==============================
+   Treppe
+   ============================== */
+
+#stairs{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:flex-start;
+
+    gap:12px;
+
+    margin:30px 0;
+
+}
+
+.step{
+
+    background:white;
+
+    border-radius:16px;
+
+    padding:14px 22px;
+
+    font-size:2rem;
+
+    font-weight:bold;
+
+    box-shadow:0 4px 10px rgba(0,0,0,.10);
+
+    min-width:120px;
+
+}
+
+
+/* Einrückung */
+
+.step:nth-child(1){margin-left:0;}
+.step:nth-child(2){margin-left:20px;}
+.step:nth-child(3){margin-left:40px;}
+.step:nth-child(4){margin-left:60px;}
+.step:nth-child(5){margin-left:80px;}
+.step:nth-child(6){margin-left:100px;}
+.step:nth-child(7){margin-left:120px;}
+.step:nth-child(8){margin-left:140px;}
+.step:nth-child(9){margin-left:160px;}
+.step:nth-child(10){margin-left:180px;}
+
+
+/* ==============================
+   Feedback
+   ============================== */
+
+#feedback{
+
+    min-height:60px;
+
+    text-align:center;
+
+    font-size:1.4rem;
+
+    font-weight:bold;
+
+    margin:25px 0;
+
+}
+
+
+/* ==============================
+   Hilfe
+   ============================== */
+
+footer{
+
+    margin-top:20px;
+
+}
+
+#listenButton{
+
+    background:#2e7d32;
+
+}
+
+#listenButton:hover{
+
+    background:#1b5e20;
+
+}
+
+
+/* ==============================
+   Smartphone
+   ============================== */
+
+@media(max-width:700px){
+
+    #app{
+
+        padding:15px;
+
     }
 
-    #stairs {
-        font-size: 1.6rem;
+    h1{
+
+        font-size:2rem;
+
     }
 
-    .buttonRow {
-        flex-direction: column;
+    .subtitle{
+
+        font-size:1rem;
+
     }
+
+    #currentList{
+
+        font-size:1rem;
+
+    }
+
+    #stars{
+
+        font-size:1rem;
+
+    }
+
+    .step{
+
+        font-size:1.7rem;
+
+        padding:12px 18px;
+
+    }
+
 }
