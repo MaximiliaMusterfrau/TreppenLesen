@@ -147,6 +147,7 @@ const soundGroups = [
     "ei",
     "ie",
     "au",
+    "äu",
     "eu",
 
     "tz",
