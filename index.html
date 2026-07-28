@@ -1,79 +1,134 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
     <title>TreppenLesen</title>
 
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css">
 
-    <meta name="theme-color" content="#4CAF50">
 </head>
 
 <body>
 
-<div id="startScreen" class="screen active">
+<div id="app">
 
-    <h1>📚 TreppenLesen</h1>
+    <!-- ========================= -->
+    <!-- Startseite -->
+    <!-- ========================= -->
 
-    <p>Bitte wähle eine Lernwortliste.</p>
+    <section id="startScreen" class="screen active">
 
-    <select id="listSelect">
-        <option value="alle">Alle Lernwörter</option>
-        <option value="LW1">LW1</option>
-        <option value="LW2">LW2</option>
-        <option value="LW3">LW3</option>
-        <option value="LW4">LW4</option>
-        <option value="LW5">LW5</option>
-        <option value="LW6">LW6</option>
-        <option value="LW7">LW7</option>
-        <option value="LW8">LW8</option>
-        <option value="LW9">LW9</option>
-        <option value="LW10">LW10</option>
-        <option value="LW11">LW11</option>
-        <option value="LW12">LW12</option>
-        <option value="LW13">LW13</option>
-        <option value="LW14">LW14</option>
-        <option value="LW15">LW15</option>
-        <option value="LW16">LW16</option>
-        <option value="LW17">LW17</option>
-    </select>
+        <h1>📚 TreppenLesen</h1>
 
-    <button id="startButton">
-        ▶ Lernen starten
-    </button>
+        <p class="subtitle">
 
-</div>
+            Lesen lernen mit Treppenwörtern
 
-<div id="learnScreen" class="screen">
+        </p>
 
-    <header>
+        <div class="card">
 
-        <button id="homeButton">🏠</button>
+            <label for="listSelect">
 
-        <h2 id="currentList"></h2>
+                Lernwortliste
 
-        <div id="stars">0 ⭐</div>
+            </label>
 
-    </header>
+            <select id="listSelect">
 
-    <div id="stairs"></div>
+                <option value="alle">Alle Wörter</option>
 
-    <div class="buttonRow">
+                <option value="LW1">LW 1</option>
+                <option value="LW2">LW 2</option>
+                <option value="LW3">LW 3</option>
+                <option value="LW4">LW 4</option>
+                <option value="LW5">LW 5</option>
+                <option value="LW6">LW 6</option>
+                <option value="LW7">LW 7</option>
+                <option value="LW8">LW 8</option>
+                <option value="LW9">LW 9</option>
+                <option value="LW10">LW 10</option>
+                <option value="LW11">LW 11</option>
+                <option value="LW12">LW 12</option>
+                <option value="LW13">LW 13</option>
+                <option value="LW14">LW 14</option>
+                <option value="LW15">LW 15</option>
+                <option value="LW16">LW 16</option>
+                <option value="LW17">LW 17</option>
 
-        <button id="listenButton">
-            🔊 Vorlesen
+            </select>
+
+        </div>
+
+        <button id="startButton">
+
+            ▶️ Lernen starten
+
         </button>
 
-        <button id="micButton">
-            🎤 Lesen
-        </button>
+    </section>
 
-    </div>
 
-    <div id="feedback"></div>
+    <!-- ========================= -->
+    <!-- Lernseite -->
+    <!-- ========================= -->
+
+    <section id="learnScreen" class="screen">
+
+        <header>
+
+            <button id="homeButton">
+
+                ← Start
+
+            </button>
+
+            <h2 id="currentList">
+
+                Lernen
+
+            </h2>
+
+            <div id="stars">
+
+                0 ⭐
+
+            </div>
+
+        </header>
+
+
+        <main>
+
+            <div id="stairs">
+
+            </div>
+
+            <div id="feedback">
+
+            </div>
+
+        </main>
+
+
+        <footer>
+
+            <button id="listenButton" style="display:none;">
+
+                🔊 Zeile anhören
+
+            </button>
+
+        </footer>
+
+    </section>
 
 </div>
 
@@ -81,4 +136,5 @@
 <script src="app.js"></script>
 
 </body>
+
 </html>
