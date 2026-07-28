@@ -156,14 +156,29 @@ function showWord(){
 
 let germanVoice = null;
 
-function loadVoices(){
+function loadVoices() {
 
     const voices = speechSynthesis.getVoices();
 
+    // 1. Bevorzugt Markus
     germanVoice =
-        voices.find(v => v.lang === "de-DE") ||
-        voices.find(v => v.lang.startsWith("de")) ||
+        voices.find(v =>
+            v.name.toLowerCase().includes("markus")
+        ) ||
+
+        // 2. Danach andere deutsche Stimmen
+        voices.find(v =>
+            v.lang === "de-DE"
+        ) ||
+
+        voices.find(v =>
+            v.lang.startsWith("de")
+        ) ||
+
+        // 3. Falls nichts gefunden wurde
         null;
+
+    console.log("Verwendete Stimme:", germanVoice);
 
 }
 
