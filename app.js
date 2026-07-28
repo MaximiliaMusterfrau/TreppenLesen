@@ -35,18 +35,72 @@ let currentWords = [];
 let currentWord = null;
 let lastWord = null;
 
-let recognition = null;
+let currentParts = [];
+let currentStep = 0;
 
+let recognition = null;
 let germanVoice = null;
 
 let starCount = 0;
+let failedAttempts = 0;
+
+
+// ==============================
+// Lautgruppen
+// ==============================
+
+const soundGroups = [
+
+    "tsch",
+    "sch",
+
+    "ch",
+    "sp",
+    "st",
+
+    "ei",
+    "ie",
+    "au",
+    "eu",
+
+    "tz",
+    "ck",
+
+    "ng",
+    "qu",
+    "pf"
+
+];
+
+const easyGroups = [
+
+    "ei",
+    "ie",
+    "au",
+    "eu"
+
+];
+
+const hardGroups = [
+
+    "sch",
+    "ch",
+    "sp",
+    "st",
+    "tz",
+    "ck",
+    "ng",
+    "qu",
+    "pf"
+
+];
 
 
 // ==============================
 // Bildschirme
 // ==============================
 
-function showScreen(screen) {
+function showScreen(screen){
 
     startScreen.classList.remove("active");
     learnScreen.classList.remove("active");
@@ -60,9 +114,44 @@ function showScreen(screen) {
 // Sterne
 // ==============================
 
-function updateStars() {
+function updateStars(){
 
     stars.textContent = `${starCount} ⭐`;
+
+}
+
+
+// ==============================
+// Schwierigkeit berechnen
+// ==============================
+
+function getDifficulty(word){
+
+    const lower = word.toLowerCase();
+
+    let score = word.length;
+
+    easyGroups.forEach(group=>{
+
+        if(lower.includes(group)){
+
+            score += 5;
+
+        }
+
+    });
+
+    hardGroups.forEach(group=>{
+
+        if(lower.includes(group)){
+
+            score += 10;
+
+        }
+
+    });
+
+    return score;
 
 }
 
@@ -71,120 +160,130 @@ function updateStars() {
 // Wörter laden
 // ==============================
 
-function loadWords() {
+function loadWords(){
 
     const selected = listSelect.value;
 
-    if (selected === "alle") {
+    if(selected === "alle"){
 
         currentWords = [...words];
-        currentList.textContent = "Alle Lernwörter";
 
-    } else {
+        currentWords.sort((a,b)=>{
+
+            return getDifficulty(a.word) -
+                   getDifficulty(b.word);
+
+        });
+
+        currentList.textContent =
+            "Alle Lernwörter";
+
+    }else{
 
         currentWords = words.filter(
             w => w.list === selected
         );
 
-        currentList.textContent = selected;
+        currentList.textContent =
+            selected;
 
     }
 
 }
-
-
 // ==============================
 // Zufallswort
 // ==============================
 
-function chooseWord() {
+function chooseWord(){
 
     loadWords();
 
-    if (currentWords.length === 0) {
+    if(currentWords.length === 0){
 
         currentWord = null;
         return;
 
     }
 
-    let selected =
-        currentWords[
-            Math.floor(Math.random() * currentWords.length)
-        ];
+    if(listSelect.value === "alle"){
 
-    while (
-        currentWords.length > 1 &&
-        lastWord &&
-        selected.word === lastWord.word
-    ) {
+        currentWord = currentWords.shift();
 
-        selected =
+        currentWords.push(currentWord);
+
+    }else{
+
+        let selected =
             currentWords[
-                Math.floor(Math.random() * currentWords.length)
+                Math.floor(
+                    Math.random() *
+                    currentWords.length
+                )
             ];
+
+        while(
+
+            currentWords.length > 1 &&
+            lastWord &&
+            selected.word === lastWord.word
+
+        ){
+
+            selected =
+                currentWords[
+                    Math.floor(
+                        Math.random() *
+                        currentWords.length
+                    )
+                ];
+
+        }
+
+        currentWord = selected;
 
     }
 
-    currentWord = selected;
-    lastWord = selected;
+    lastWord = currentWord;
+
+    currentParts =
+        splitWord(currentWord.word);
+
+    currentStep = 1;
+
+    failedAttempts = 0;
 
 }
 
 
 // ==============================
-// Lautgruppen
+// Wort zerlegen
 // ==============================
 
-const soundGroups = [
-
-    "sch",
-
-    "ch",
-    "sp",
-    "st",
-
-    "ei",
-    "ie",
-    "au",
-    "äu",
-    "eu",
-
-    "tz",
-    "ck",
-
-    "ng",
-    "qu",
-    "pf"
-
-];
-
-
-// ==============================
-// Wort in Leseeinheiten zerlegen
-// ==============================
-
-function splitWord(word) {
+function splitWord(word){
 
     const parts = [];
 
     let i = 0;
 
-    while (i < word.length) {
+    while(i < word.length){
 
         let found = false;
 
-        for (const group of soundGroups) {
+        for(const group of soundGroups){
 
-            const section =
-                word
-                    .substring(i, i + group.length)
-                    .toLowerCase();
+            const text =
+                word.substring(
+                    i,
+                    i + group.length
+                ).toLowerCase();
 
-            if (section === group) {
+            if(text === group){
 
                 parts.push(
-                    word.substring(i, i + group.length)
+                    word.substring(
+                        i,
+                        i + group.length
+                    )
                 );
 
                 i += group.length;
@@ -197,7 +296,7 @@ function splitWord(word) {
 
         }
 
-        if (!found) {
+        if(!found){
 
             parts.push(word[i]);
 
@@ -210,24 +309,37 @@ function splitWord(word) {
     return parts;
 
 }
+
+
 // ==============================
-// Treppe erzeugen
+// Treppe anzeigen
 // ==============================
 
-function buildStairs(parts) {
+function showCurrentStep(){
 
     let html = "";
+
     let text = "";
 
-    for (const part of parts) {
+    for(
 
-        text += part;
+        let i = 0;
 
-        html += `
-            <div class="step">
+        i < currentStep;
+
+        i++
+
+    ){
+
+        text += currentParts[i];
+
+        html +=
+
+            `<div class="step">
+
                 ${text}
-            </div>
-        `;
+
+            </div>`;
 
     }
 
@@ -237,14 +349,14 @@ function buildStairs(parts) {
 
 
 // ==============================
-// Wort anzeigen
+// Neues Wort
 // ==============================
 
-function showWord() {
+function showWord(){
 
     chooseWord();
 
-    if (currentWord === null) {
+    if(currentWord === null){
 
         stairs.innerHTML = "";
 
@@ -257,24 +369,23 @@ function showWord() {
 
     feedback.textContent = "";
 
-    const parts =
-        splitWord(currentWord.word);
+    showCurrentStep();
 
-    buildStairs(parts);
+    setTimeout(()=>{
+
+        startRecognition();
+
+    },500);
 
 }
-
-
 // ==============================
-// Stimmen laden
+// Stimmen
 // ==============================
 
-function loadVoices() {
+function loadVoices(){
 
     const voices =
         speechSynthesis.getVoices();
-
-    // Bevorzugt Markus
 
     germanVoice =
 
@@ -292,11 +403,6 @@ function loadVoices() {
 
         null;
 
-    console.log(
-        "Verwendete Stimme:",
-        germanVoice
-    );
-
 }
 
 loadVoices();
@@ -306,36 +412,57 @@ speechSynthesis.onvoiceschanged =
 
 
 // ==============================
-// Wort vorlesen
+// Aktuelle Zeile vorlesen
 // ==============================
 
-listenButton.addEventListener(
-    "click",
-    () => {
+function speakCurrentStep(){
 
-        if (!currentWord) return;
+    speechSynthesis.cancel();
 
-        speechSynthesis.cancel();
+    let text = "";
 
-        const speech =
-            new SpeechSynthesisUtterance(
-                currentWord.word
-            );
+    for(
 
-        speech.lang = "de-DE";
-        speech.rate = 0.9;
-        speech.pitch = 1.0;
+        let i = 0;
 
-        if (germanVoice) {
+        i < currentStep;
 
-            speech.voice = germanVoice;
+        i++
 
-        }
+    ){
 
-        speechSynthesis.speak(speech);
+        text += currentParts[i];
 
     }
-);
+
+    const speech =
+        new SpeechSynthesisUtterance(text);
+
+    speech.lang = "de-DE";
+    speech.rate = 0.9;
+    speech.pitch = 1;
+
+    if(germanVoice){
+
+        speech.voice = germanVoice;
+
+    }
+
+    speech.onend = ()=>{
+
+        setTimeout(()=>{
+
+            startRecognition();
+
+        },500);
+
+    };
+
+    speechSynthesis.speak(speech);
+
+}
+
+
 // ==============================
 // Spracherkennung
 // ==============================
@@ -344,89 +471,150 @@ const SpeechRecognition =
     window.SpeechRecognition ||
     window.webkitSpeechRecognition;
 
-if (SpeechRecognition) {
+if(SpeechRecognition){
 
-    recognition = new SpeechRecognition();
+    recognition =
+        new SpeechRecognition();
 
     recognition.lang = "de-DE";
+
     recognition.interimResults = false;
+
     recognition.maxAlternatives = 1;
 
-    recognition.onstart = () => {
+    recognition.onstart = ()=>{
 
         feedback.textContent =
-            "🎤 Ich höre zu ...";
+            "🎤 Bitte lesen...";
 
     };
 
-    recognition.onresult = (event) => {
+    recognition.onresult = (event)=>{
 
         const spoken =
             event.results[0][0].transcript
-                .trim()
-                .toLowerCase();
+            .trim()
+            .toLowerCase();
 
-        const target =
-            currentWord.word
-                .trim()
-                .toLowerCase();
+        let target = "";
 
-        if (spoken === target) {
+        for(
 
-            starCount++;
+            let i = 0;
 
-            updateStars();
+            i < currentStep;
+
+            i++
+
+        ){
+
+            target += currentParts[i];
+
+        }
+
+        target =
+            target.toLowerCase();
+
+        if(spoken === target){
+
+            failedAttempts = 0;
+
+            if(currentStep < currentParts.length){
+
+                currentStep++;
+
+                showCurrentStep();
+
+                setTimeout(()=>{
+
+                    startRecognition();
+
+                },500);
+
+            }else{
+
+                starCount++;
+
+                updateStars();
+
+                feedback.textContent =
+                    "⭐ Super gemacht!";
+
+                setTimeout(()=>{
+
+                    showWord();
+
+                },1200);
+
+            }
+
+        }else{
+
+            failedAttempts++;
 
             feedback.textContent =
-                "⭐ Super gemacht!";
+                "😊 Versuche es noch einmal.";
 
-            setTimeout(() => {
+            if(failedAttempts >= 1){
 
-                showWord();
+                listenButton.style.display =
+                    "inline-block";
 
-            }, 1200);
-
-        } else {
-
-            feedback.textContent =
-                `😊 Du hast "${spoken}" gesagt. Versuche es noch einmal.`;
+            }
 
         }
 
     };
-
-    recognition.onerror = (event) => {
-
-        console.log(event);
+        recognition.onerror = ()=>{
 
         feedback.textContent =
-            "⚠️ Spracherkennung konnte nicht gestartet werden.";
+            "⚠️ Bitte erneut versuchen.";
 
     };
 
-} else {
+}else{
 
     micButton.disabled = true;
 
     feedback.textContent =
-        "⚠️ Dieser Browser unterstützt keine Spracherkennung.";
+        "⚠️ Spracherkennung wird auf diesem Gerät nicht unterstützt.";
 
 }
 
-micButton.addEventListener("click", () => {
 
-    if (!recognition) return;
+// ==============================
+// Spracherkennung starten
+// ==============================
 
-    if (!currentWord) return;
+function startRecognition(){
+
+    if(!recognition) return;
 
     recognition.start();
 
+}
+
+
+// ==============================
+// Hilfe-Button
+// ==============================
+
+listenButton.style.display = "none";
+
+listenButton.addEventListener("click",()=>{
+
+    listenButton.style.display = "none";
+
+    speakCurrentStep();
+
 });
+
+
 // ==============================
 // Buttons
 // ==============================
 
-startButton.addEventListener("click", () => {
+startButton.addEventListener("click",()=>{
 
     showScreen(learnScreen);
 
@@ -435,15 +623,17 @@ startButton.addEventListener("click", () => {
 });
 
 
-homeButton.addEventListener("click", () => {
+homeButton.addEventListener("click",()=>{
 
     speechSynthesis.cancel();
 
-    if (recognition) {
+    if(recognition){
 
         recognition.abort();
 
     }
+
+    listenButton.style.display = "none";
 
     feedback.textContent = "";
 
@@ -456,9 +646,9 @@ homeButton.addEventListener("click", () => {
 // Service Worker
 // ==============================
 
-if ("serviceWorker" in navigator) {
+if("serviceWorker" in navigator){
 
-    window.addEventListener("load", () => {
+    window.addEventListener("load",()=>{
 
         navigator.serviceWorker.register(
             "service-worker.js"
@@ -470,7 +660,7 @@ if ("serviceWorker" in navigator) {
 
 
 // ==============================
-// App starten
+// Start
 // ==============================
 
 updateStars();
