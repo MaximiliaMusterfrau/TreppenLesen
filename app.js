@@ -1,6 +1,12 @@
 // ==============================
 // TreppenLesen
 // app.js
+// Teil 1 von 4
+// ==============================
+
+
+// ==============================
+// Elemente
 // ==============================
 
 const startScreen = document.getElementById("startScreen");
@@ -20,20 +26,27 @@ const micButton = document.getElementById("micButton");
 const feedback = document.getElementById("feedback");
 const stars = document.getElementById("stars");
 
+
+// ==============================
+// Variablen
+// ==============================
+
 let currentWords = [];
 let currentWord = null;
 let lastWord = null;
 
-let starCount = 0;
-
 let recognition = null;
+
+let germanVoice = null;
+
+let starCount = 0;
 
 
 // ==============================
 // Bildschirme
 // ==============================
 
-function showScreen(screen){
+function showScreen(screen) {
 
     startScreen.classList.remove("active");
     learnScreen.classList.remove("active");
@@ -47,7 +60,7 @@ function showScreen(screen){
 // Sterne
 // ==============================
 
-function updateStars(){
+function updateStars() {
 
     stars.textContent = `${starCount} ⭐`;
 
@@ -58,16 +71,16 @@ function updateStars(){
 // Wörter laden
 // ==============================
 
-function loadWords(){
+function loadWords() {
 
     const selected = listSelect.value;
 
-    if(selected === "alle"){
+    if (selected === "alle") {
 
         currentWords = [...words];
         currentList.textContent = "Alle Lernwörter";
 
-    }else{
+    } else {
 
         currentWords = words.filter(
             w => w.list === selected
@@ -84,11 +97,11 @@ function loadWords(){
 // Zufallswort
 // ==============================
 
-function chooseWord(){
+function chooseWord() {
 
     loadWords();
 
-    if(currentWords.length === 0){
+    if (currentWords.length === 0) {
 
         currentWord = null;
         return;
@@ -97,18 +110,18 @@ function chooseWord(){
 
     let selected =
         currentWords[
-            Math.floor(Math.random()*currentWords.length)
+            Math.floor(Math.random() * currentWords.length)
         ];
 
-    while(
+    while (
         currentWords.length > 1 &&
         lastWord &&
         selected.word === lastWord.word
-    ){
+    ) {
 
         selected =
             currentWords[
-                Math.floor(Math.random()*currentWords.length)
+                Math.floor(Math.random() * currentWords.length)
             ];
 
     }
@@ -120,28 +133,100 @@ function chooseWord(){
 
 
 // ==============================
-// Treppe anzeigen
+// Lautgruppen
 // ==============================
 
-function showWord(){
+const soundGroups = [
 
-    chooseWord();
+    "sch",
 
-    if(currentWord === null){
+    "ch",
+    "sp",
+    "st",
 
-        stairs.innerHTML = "";
-        feedback.textContent = "Keine Wörter vorhanden.";
-        return;
+    "ei",
+    "ie",
+    "au",
+    "eu",
+
+    "tz",
+    "ck",
+
+    "ng",
+    "qu",
+    "pf"
+
+];
+
+
+// ==============================
+// Wort in Leseeinheiten zerlegen
+// ==============================
+
+function splitWord(word) {
+
+    const parts = [];
+
+    let i = 0;
+
+    while (i < word.length) {
+
+        let found = false;
+
+        for (const group of soundGroups) {
+
+            const section =
+                word
+                    .substring(i, i + group.length)
+                    .toLowerCase();
+
+            if (section === group) {
+
+                parts.push(
+                    word.substring(i, i + group.length)
+                );
+
+                i += group.length;
+
+                found = true;
+
+                break;
+
+            }
+
+        }
+
+        if (!found) {
+
+            parts.push(word[i]);
+
+            i++;
+
+        }
 
     }
 
-    feedback.textContent = "";
+    return parts;
+
+}
+// ==============================
+// Treppe erzeugen
+// ==============================
+
+function buildStairs(parts) {
 
     let html = "";
+    let text = "";
 
-    for(let i=1;i<=currentWord.word.length;i++){
+    for (const part of parts) {
 
-        html += currentWord.word.substring(0,i) + "<br>";
+        text += part;
+
+        html += `
+            <div class="step">
+                ${text}
+            </div>
+        `;
 
     }
 
@@ -151,22 +236,51 @@ function showWord(){
 
 
 // ==============================
-// Vorlesen
+// Wort anzeigen
 // ==============================
 
-let germanVoice = null;
+function showWord() {
+
+    chooseWord();
+
+    if (currentWord === null) {
+
+        stairs.innerHTML = "";
+
+        feedback.textContent =
+            "Keine Wörter vorhanden.";
+
+        return;
+
+    }
+
+    feedback.textContent = "";
+
+    const parts =
+        splitWord(currentWord.word);
+
+    buildStairs(parts);
+
+}
+
+
+// ==============================
+// Stimmen laden
+// ==============================
 
 function loadVoices() {
 
-    const voices = speechSynthesis.getVoices();
+    const voices =
+        speechSynthesis.getVoices();
 
-    // 1. Bevorzugt Markus
+    // Bevorzugt Markus
+
     germanVoice =
+
         voices.find(v =>
             v.name.toLowerCase().includes("markus")
         ) ||
 
-        // 2. Danach andere deutsche Stimmen
         voices.find(v =>
             v.lang === "de-DE"
         ) ||
@@ -175,39 +289,52 @@ function loadVoices() {
             v.lang.startsWith("de")
         ) ||
 
-        // 3. Falls nichts gefunden wurde
         null;
 
-    console.log("Verwendete Stimme:", germanVoice);
+    console.log(
+        "Verwendete Stimme:",
+        germanVoice
+    );
 
 }
 
 loadVoices();
 
-speechSynthesis.onvoiceschanged = loadVoices;
+speechSynthesis.onvoiceschanged =
+    loadVoices;
 
-listenButton.addEventListener("click",()=>{
 
-    if(currentWord===null) return;
+// ==============================
+// Wort vorlesen
+// ==============================
 
-    speechSynthesis.cancel();
+listenButton.addEventListener(
+    "click",
+    () => {
 
-    const speech =
-        new SpeechSynthesisUtterance(currentWord.word);
+        if (!currentWord) return;
 
-    speech.lang = "de-DE";
-    speech.rate = 0.9;
-    speech.pitch = 1;
+        speechSynthesis.cancel();
 
-    if(germanVoice){
+        const speech =
+            new SpeechSynthesisUtterance(
+                currentWord.word
+            );
 
-        speech.voice = germanVoice;
+        speech.lang = "de-DE";
+        speech.rate = 0.9;
+        speech.pitch = 1.0;
+
+        if (germanVoice) {
+
+            speech.voice = germanVoice;
+
+        }
+
+        speechSynthesis.speak(speech);
 
     }
-
-    speechSynthesis.speak(speech);
-
-});
+);
 // ==============================
 // Spracherkennung
 // ==============================
@@ -226,7 +353,8 @@ if (SpeechRecognition) {
 
     recognition.onstart = () => {
 
-        feedback.textContent = "🎤 Ich höre zu ...";
+        feedback.textContent =
+            "🎤 Ich höre zu ...";
 
     };
 
@@ -245,9 +373,11 @@ if (SpeechRecognition) {
         if (spoken === target) {
 
             starCount++;
+
             updateStars();
 
-            feedback.textContent = "⭐ Super gemacht!";
+            feedback.textContent =
+                "⭐ Super gemacht!";
 
             setTimeout(() => {
 
@@ -264,7 +394,9 @@ if (SpeechRecognition) {
 
     };
 
-    recognition.onerror = () => {
+    recognition.onerror = (event) => {
+
+        console.log(event);
 
         feedback.textContent =
             "⚠️ Spracherkennung konnte nicht gestartet werden.";
@@ -282,15 +414,13 @@ if (SpeechRecognition) {
 
 micButton.addEventListener("click", () => {
 
-    if (recognition && currentWord) {
+    if (!recognition) return;
 
-        recognition.start();
+    if (!currentWord) return;
 
-    }
+    recognition.start();
 
 });
-
-
 // ==============================
 // Buttons
 // ==============================
@@ -298,9 +428,11 @@ micButton.addEventListener("click", () => {
 startButton.addEventListener("click", () => {
 
     showScreen(learnScreen);
+
     showWord();
 
 });
+
 
 homeButton.addEventListener("click", () => {
 
@@ -327,7 +459,9 @@ if ("serviceWorker" in navigator) {
 
     window.addEventListener("load", () => {
 
-        navigator.serviceWorker.register("service-worker.js");
+        navigator.serviceWorker.register(
+            "service-worker.js"
+        );
 
     });
 
@@ -335,7 +469,7 @@ if ("serviceWorker" in navigator) {
 
 
 // ==============================
-// Start
+// App starten
 // ==============================
 
 updateStars();
